@@ -14,13 +14,8 @@ import java.util.Collection;
  */
 public class JSONChooser implements JSONDecorator{
 
-    private Collection<String> fieldNames;
-    /**
-     * Method for setting field names
-     *
-     * @param fieldNames Field Names String Collection
-     */
-    public void setfieldNames(Collection<String> fieldNames) {
+    private final Collection<String> fieldNames;
+    public JSONChooser(Collection<String> fieldNames){
         this.fieldNames = fieldNames;
     }
     /**
