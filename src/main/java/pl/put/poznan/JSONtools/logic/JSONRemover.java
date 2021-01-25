@@ -12,17 +12,25 @@ import java.util.Collection;
  * Decorator removing fields from JSON String
  *
  */
-public class JSONRemover implements JSONCleaner{
+public class JSONRemover implements JSONDecorator{
 
+    private Collection<String> fieldNames;
+    /**
+     * Method for setting field names
+     *
+     * @param fieldNames Field Names String Collection
+     */
+    public void setfieldNames(Collection<String> fieldNames) {
+        this.fieldNames = fieldNames;
+    }
     /**
      * Method for processing JSON String
      *
      * @param JSONFile JSON String
-     * @param fieldNames Field Names Collection
-     * @return original JSON String with given fields removed
+     * @return original JSON String with given fields retained
      */
     @Override
-    public String clean(String JSONFile, Collection<String> fieldNames){
+    public String decorate(String JSONFile){
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = null;
         try {
