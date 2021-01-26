@@ -366,4 +366,34 @@ class TextTransformerControllerTest {
         InOrder order_min = inOrder(tr.jm);
         order_min.verify(tr.jm).decorate(anyString());
     }
+
+    @Test
+    void testPrettyMockBrokenJSON() {
+        TextTransformerController tr = new TextTransformerController();
+        tr.jp = mock(JSONPrettifier.class);
+
+        String json = "{\"entryId:\"b29ed77a-b447-4fd8-ae6a-8c5180724cd7\" \"lock\":  \"isLocked\":false}}";
+
+        when(tr.jp.decorate(anyString())).thenReturn("lorem ipsum");
+
+        tr.prettify(json);
+
+        InOrder order_pretty = inOrder(tr.jp);
+        order_pretty.verify(tr.jp).decorate(anyString());
+    }
+
+    @Test
+    void testMinMockBrokenJSON() {
+        TextTransformerController tr = new TextTransformerController();
+        tr.jm = mock(JSONMinifier.class);
+
+        String json = "{\"entryId\":\"b29ed77a-b447-4fd8-ae6a-8c5180724cd7\",\"lock\":{\"isLocked\":fals}";
+
+        when(tr.jm.decorate(anyString())).thenReturn("lorem ipsum");
+
+        tr.minify(json);
+
+        InOrder order_min = inOrder(tr.jm);
+        order_min.verify(tr.jm).decorate(anyString());
+    }
 }

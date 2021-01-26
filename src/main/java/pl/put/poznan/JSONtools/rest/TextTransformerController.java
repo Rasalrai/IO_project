@@ -1,4 +1,5 @@
 package pl.put.poznan.JSONtools.rest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -9,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -25,7 +25,13 @@ public class TextTransformerController {
 
     private static final Logger logger = LoggerFactory.getLogger(TextTransformerController.class);
 
+    /**
+     * Minifier object used for processing the requests.
+     */
     public JSONMinifier jm = new JSONMinifier();
+    /**
+     * Prettifier object used for processing the requests (e.g. formatting the help page).
+     */
     public JSONPrettifier jp = new JSONPrettifier();
 
     /**
@@ -93,6 +99,12 @@ public class TextTransformerController {
         return jp.decorate(json);
     }
 
+    /**
+     * Processes a JSON file, leaving only the specified fields
+     * @param fields names of fields that are to stay
+     * @param json string with JSON file for processing
+     * @return the JSON string, with all but specified fields removed.
+     */
     @RequestMapping(path = "/choose", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String choose(@RequestParam(value="fields") String fields,
                          @RequestBody String json) {
@@ -102,6 +114,12 @@ public class TextTransformerController {
         return jc.decorate(json);
     }
 
+    /**
+     * Processes a JSON file, removing specified fields
+     * @param fields names of fields that are to be removed
+     * @param json string with JSON file for processing
+     * @return the JSON file string, with specified fields removed.
+     */
     @RequestMapping(path = "/remove", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String remove(@RequestParam(value="fields") String fields,
                          @RequestBody String json) {
