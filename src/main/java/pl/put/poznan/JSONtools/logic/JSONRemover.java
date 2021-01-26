@@ -20,7 +20,6 @@ public class JSONRemover implements JSONDecorator{
     }
     /**
      * Method for processing JSON String
-     *
      * @param JSONFile JSON String
      * @return original JSON String with given fields retained
      */
