@@ -25,8 +25,8 @@ public class TextTransformerController {
 
     private static final Logger logger = LoggerFactory.getLogger(TextTransformerController.class);
 
-    private final JSONMinifier jm = new JSONMinifier();
-    private final JSONPrettifier jp = new JSONPrettifier();
+    public JSONMinifier jm = new JSONMinifier();
+    public JSONPrettifier jp = new JSONPrettifier();
 
     /**
      * Help method for the API
