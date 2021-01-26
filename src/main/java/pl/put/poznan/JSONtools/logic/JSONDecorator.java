@@ -1,7 +1,5 @@
 package pl.put.poznan.JSONtools.logic;
 
-import java.util.Collection;
-
 /**
  * JSONDecorator.java
  * Interface implementing Decorator Design Pattern
