@@ -2,12 +2,16 @@ package pl.put.poznan.JSONtools.rest;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import pl.put.poznan.JSONtools.logic.JSONMinifier;
 import pl.put.poznan.JSONtools.logic.JSONPrettifier;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 class TextTransformerControllerTest {
 
 
@@ -318,5 +322,48 @@ class TextTransformerControllerTest {
         String expected = "{\"id\":\"8556155a-25f2-4295-a864-043d31ac7bdd\",\"isSensitive\":false,\"lock\":{\"isLocked\":false},\"name\":\"Barry Wilkinson - Układy cyfrowe (1).pdf\",\"path\":\"/Shared/Julia ⨊ ૱/Barry Wilkinson - Układy cyfrowe (1).pdf\",\"permission\":\"Full\",\"size\":130399044,\"snapshot\":false,\"type\":\"file\"}";
 
         assertEquals(tr.remove(field_names, full), expected);
+    }
+
+    @Test
+    void testGet_helpPretty() {
+        TextTransformerController tr = new TextTransformerController();
+        tr.jp = mock(JSONPrettifier.class);
+
+        when(tr.jp.decorate(anyString())).thenReturn("lorem ipsum");
+
+        tr.get_help();
+
+        InOrder order_pretty = inOrder(tr.jp);
+        order_pretty.verify(tr.jp).decorate(anyString());
+    }
+
+    @Test
+    void testPrettyMock() {
+        TextTransformerController tr = new TextTransformerController();
+        tr.jp = mock(JSONPrettifier.class);
+
+        String json = "{\"entryId\":\"b29ed77a-b447-4fd8-ae6a-8c5180724cd7\",\"lock\":{\"isLocked\":false}}";
+
+        when(tr.jp.decorate(anyString())).thenReturn("lorem ipsum");
+
+        tr.prettify(json);
+
+        InOrder order_pretty = inOrder(tr.jp);
+        order_pretty.verify(tr.jp).decorate(anyString());
+    }
+
+    @Test
+    void testMinMock() {
+        TextTransformerController tr = new TextTransformerController();
+        tr.jm = mock(JSONMinifier.class);
+
+        String json = "{\"entryId\":\"b29ed77a-b447-4fd8-ae6a-8c5180724cd7\",\"lock\":{\"isLocked\":false}}";
+
+        when(tr.jm.decorate(anyString())).thenReturn("lorem ipsum");
+
+        tr.minify(json);
+
+        InOrder order_min = inOrder(tr.jm);
+        order_min.verify(tr.jm).decorate(anyString());
     }
 }
