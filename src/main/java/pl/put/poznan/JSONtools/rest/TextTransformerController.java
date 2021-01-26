@@ -6,9 +6,16 @@ import org.springframework.web.bind.annotation.*;
 import pl.put.poznan.JSONtools.logic.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.List;
 
 
+/**
+ * class TextTransformerController
+ * Responsible for receiving HTTP requests, executing the requested methods and sending responses back.
+ */
 @RestController
 public class TextTransformerController {
 
@@ -21,14 +28,24 @@ public class TextTransformerController {
     private final JSONMinifier jm = new JSONMinifier();
     private final JSONPrettifier jp = new JSONPrettifier();
 
+    /**
+     * Help method for the API
+     * @return short help JSON with all the available commands listed.
+     */
     @RequestMapping(path = "/help", method = RequestMethod.GET, produces = "application/json")
     public String get_help() {
 
         // log the parameters
         logger.info("help");
-        return jp.decorate("{\"Available\":{\"POST\":{\"/compare?left=file1&right=file2\":\"compare base64 encoded files\",\"/min\":\"minify the request body\",\"/pretty\":\"formats the request body for human-readability\"},\"GET\":{\"/help\":\"get help; you are here.\"}}}");
+        return jp.decorate("{\"Available\":{\"POST\":{\"/compare?left=file1&right=file2\":\"compare base64 encoded files\",\"/min\":\"minify the request body\",\"/pretty\":\"formats the request body for human-readability\"},\"GET\":{\"/help\":\"get help; you are here.\",\"/choose\":\"get only specified entries\",\"/remove\":\"remove specified entries\"}}}");
     }
 
+    /**
+     * Method calling JSONCompare
+     * @param f1 the first ("left") JSON to compare, encoded in base64
+     * @param f2 the second ("right") JSON to compare, encoded in base64
+     * @return differences between f1 and f2
+     */
     @RequestMapping(path = "/compare", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String compare(@RequestParam(value="left") String f1,
                           @RequestParam(value="right") String f2) {
@@ -46,6 +63,11 @@ public class TextTransformerController {
         return jc.compare();
     }
 
+    /**
+     * Method calling JSONMinifier's decorate
+     * @param json JSON structure that needs to be minified
+     * @return JSON passed as the parameter, but with all unnecessary whitespaces removed
+     */
     @RequestMapping(path = "/min", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String minify(@RequestBody String json) {
 
@@ -56,6 +78,11 @@ public class TextTransformerController {
         return jm.decorate(json);
     }
 
+    /**
+     * Method calling JSONPrettifier's decorate
+     * @param json JSON structure that needs to be formatted
+     * @return JSON passed as the parameter, but nicely formatted for human readability.
+     */
     @RequestMapping(path = "/pretty", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String prettify(@RequestBody String json) {
 
@@ -65,4 +92,24 @@ public class TextTransformerController {
 
         return jp.decorate(json);
     }
+
+    @RequestMapping(path = "/choose", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String choose(@RequestParam(value="fields") String fields,
+                         @RequestBody String json) {
+        Collection<String> field_names = Arrays.asList(fields.split(","));
+
+        JSONChooser jc = new JSONChooser(field_names);
+        return jc.decorate(json);
+    }
+
+    @RequestMapping(path = "/remove", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String remove(@RequestParam(value="fields") String fields,
+                         @RequestBody String json) {
+        Collection<String> field_names = Arrays.asList(fields.split(","));
+        System.out.println(field_names);
+
+        JSONRemover jr = new JSONRemover(field_names);
+        return jr.decorate(json);
+    }
+
 }
